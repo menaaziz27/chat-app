@@ -15,8 +15,14 @@ app.get('/', (req, res, next) => {
 	res.render('index.html');
 });
 
-io.on('connection', () => {
+io.on('connection', socket => {
 	console.log('welcome a new connection');
+
+	socket.emit('message', 'hello client!');
+
+	socket.on('newMessage', newMessage => {
+		io.emit('message', newMessage);
+	});
 });
 
 server.listen(PORT, () => {
