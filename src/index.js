@@ -19,7 +19,9 @@ app.get('/', (req, res, next) => {
 io.on('connection', socket => {
 	console.log('New WebSocket connection');
 
+	// usually we don't emmit immediately inside the on connection event but this made to welcome every single client
 	socket.emit('message', 'Welcome!');
+	// an event that occur to all users except the one whoe does it
 	socket.broadcast.emit('message', 'A new user has joined!');
 
 	socket.on('sendMessage', (message, callback) => {
@@ -33,7 +35,7 @@ io.on('connection', socket => {
 
 	socket.on('send-location', (coords, callback) => {
 		io.emit(
-			'message',
+			'share-location',
 			`https://google.com/maps?q=${coords.lat},${coords.long}`
 		);
 		callback();
