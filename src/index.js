@@ -19,9 +19,14 @@ io.on('connection', socket => {
 	console.log('welcome a new connection');
 
 	socket.emit('message', 'hello client!');
+	socket.broadcast.emit('message', 'new user joined');
 
 	socket.on('newMessage', newMessage => {
 		io.emit('message', newMessage);
+	});
+
+	socket.on('disconnect', () => {
+		io.emit('message', 'a user has left!');
 	});
 });
 
