@@ -3,7 +3,10 @@ const path = require('path');
 const http = require('http');
 const socketio = require('socket.io');
 const Filter = require('bad-words');
-const { generateMessage } = require('./utils/messages');
+const {
+	generateMessage,
+	generateLocationMessage,
+} = require('./utils/messages');
 
 const PORT = 8080;
 const app = express();
@@ -23,30 +26,28 @@ io.on('connection', socket => {
 	// usually we don't emmit immediately inside the on connection event but this made to welcome every single client
 	socket.emit('message', generateMessage('Welcome!'));
 	// an event that occur to all users except the one whoe does it
-	socket.broadcast.emit('message', 'A new user has joined!');
+	socket.broadcast.emit('message', generateMessage('A new user has joined!'));
 
 	socket.on('sendMessage', (message, callback) => {
 		const filter = new Filter();
 		if (filter.isProfane(message)) {
 			return callback('Profanity is not allowed');
 		}
-		io.emit('message', message);
+		io.emit('message', generateMessage(message));
 		callback();
 	});
 
 	socket.on('send-location', (coords, callback) => {
 		io.emit(
 			'share-location',
-			`https://google.com/maps?q=${coords.lat},${coords.long}`
+			generateLocationMessage(
+				`https://google.com/maps?q=${coords.lat},${coords.long}`
+			)
 		);
 		callback();
 	});
 	socket.on('disconnect', () => {
-		io.emit('message', 'A user has left!');
-	});
-
-	socket.on('disconnect', () => {
-		io.emit('message', 'a user has left!');
+		io.emit('message', generateMessage('A user has left!'));
 	});
 });
 

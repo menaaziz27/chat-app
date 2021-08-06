@@ -5,4 +5,10 @@ module.exports = {
 			createdAt: new Date().getTime(),
 		};
 	},
+	generateLocationMessage: function (url) {
+		return {
+			url,
+			createdAt: new Date().getTime(),
+		};
+	},
 };

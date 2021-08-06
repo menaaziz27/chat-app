@@ -1,25 +1,27 @@
 const socket = io();
 
-const $messageForm = document.querySelector('#form-message');
+const $messageForm = document.querySelector('#message-form');
 const $messageFormButton = document.querySelector('#submit-button');
-const $messageFormInput = document.querySelector('#message');
+const $messageFormInput = document.querySelector('#message-input');
 const $sendLocation = document.querySelector('#send-location');
 const $messages = document.querySelector('#messages');
 
 const $messageTemplate = document.querySelector('#message-template').innerHTML;
-const $locationTemplate = document.querySelector('#location-template')
+const $locationTemplate = document.querySelector('#location-message-template')
 	.innerHTML;
 
 socket.on('message', message => {
 	console.log(message);
 	const html = Mustache.render($messageTemplate, {
 		message: message.text,
+		createdAt: moment(message.createdAt).format('h:mm a'),
 	});
 	$messages.insertAdjacentHTML('beforeend', html);
 });
-socket.on('share-location', url => {
+socket.on('share-location', message => {
 	const html = Mustache.render($locationTemplate, {
-		url: message.text,
+		url: message.url,
+		createdAt: moment(message.createdAt).format('h:mm a'),
 	});
 	$messages.insertAdjacentHTML('beforeend', html);
 });
