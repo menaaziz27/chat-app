@@ -23,10 +23,16 @@ app.get('/', (req, res, next) => {
 io.on('connection', socket => {
 	console.log('New WebSocket connection');
 
-	// usually we don't emmit immediately inside the on connection event but this made to welcome every single client
-	socket.emit('message', generateMessage('Welcome!'));
-	// an event that occur to all users except the one whoe does it
-	socket.broadcast.emit('message', generateMessage('A new user has joined!'));
+	socket.on('join', ({ username, room }) => {
+		socket.join(room);
+
+		// usually we don't emmit immediately inside the on connection event but this made to welcome every single client
+		socket.emit('message', generateMessage('Welcome!'));
+		// an event that occur to all users except the one whoe does it
+		socket.broadcast
+			.to(room)
+			.emit('message', generateMessage(`${username} has joined!`));
+	});
 
 	socket.on('sendMessage', (message, callback) => {
 		const filter = new Filter();
@@ -54,3 +60,6 @@ io.on('connection', socket => {
 server.listen(PORT, () => {
 	`server is listening to port: PORT`;
 });
+
+// socket.emit, io.emit, socket.broadcast.emit
+// io.to.emit, socket.broadcast.to.emit
