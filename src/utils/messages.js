@@ -1,12 +1,14 @@
 module.exports = {
-	generateMessage: function (text) {
+	generateMessage: function (username, text) {
 		return {
+			username,
 			text,
 			createdAt: new Date().getTime(),
 		};
 	},
-	generateLocationMessage: function (url) {
+	generateLocationMessage: function (username, url) {
 		return {
+			username,
 			url,
 			createdAt: new Date().getTime(),
 		};
