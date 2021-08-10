@@ -92,12 +92,20 @@ button:disabled {
     position: relative;
 }
 
-#leaveBtn {
-    position: absolute;
-    margin: auto;
-    bottom: 0;
-    right: 0px;
+.chat__content {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
 }
+
+.chat__head {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    background: #ccc;
+}
+
+#leaveBtn {}
 
 #users {
     text-align: center;

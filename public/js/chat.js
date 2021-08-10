@@ -165,7 +165,12 @@ socket.on('warning', user => {
 });
 
 function leaveBtnHandler(e) {
-	socket.emit('leave');
+	console.log('leave now');
+	const leaveRoom = confirm('Are you sure you want to leave the chatroom?');
+	if (leaveRoom) {
+		window.location = '/';
+	}
 }
+$leaveBtn.addEventListener('click', leaveBtnHandler);
 
 $messageFormInput.addEventListener('keydown', onTyping);

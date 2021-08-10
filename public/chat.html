@@ -10,15 +10,20 @@
 <body>
     <div class="chat">
         <div id="sidebar" class="chat__sidebar"></div>
-        <div class="chat__main">
-            <div id="messages" class="chat__messages"></div>
+        <div class="chat__content">
+            <div class="chat__head">
+                <button id="leaveBtn">Leave Room</button>
+            </div>
+            <div class="chat__main">
+                <div id="messages" class="chat__messages"></div>
 
-            <div class="compose">
-                <form id="message-form">
-                    <input id="message-input" name="message" placeholder="Message" required autocomplete="off" />
-                    <button id="submit-button">Send</button>
-                </form>
-                <button id="send-location">Send location</button>
+                <div class="compose">
+                    <form id="message-form">
+                        <input id="message-input" name="message" placeholder="Message" required autocomplete="off" />
+                        <button id="submit-button">Send</button>
+                    </form>
+                    <button id="send-location">Send location</button>
+                </div>
             </div>
         </div>
     </div>
@@ -51,7 +56,6 @@
             <li class="users">{{username}}</li>
             {{/users}}
         </ul>
-        <button id="leaveBtn">Leave Room</button>
     </script>
 
     <script id="dots-template" type="text/html">
@@ -67,7 +71,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.6.0/qs.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/chat.js"></script>
+    <script src="/js/chat.js" defer></script>
 </body>
 
 </html>
