@@ -15,7 +15,7 @@ const {
 	getUsersInRoom,
 } = require('./utils/user');
 
-const PORT = 8080;
+const PORT = process.env.PORT || 3000;
 const app = express();
 const server = http.createServer(app);
 const io = socketio(server);
