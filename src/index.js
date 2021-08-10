@@ -56,6 +56,18 @@ io.on('connection', socket => {
 		callback();
 	});
 
+	socket.on('typing', () => {
+		const user = getUser(socket.id);
+
+		console.log(user.username, 'is typing');
+		socket.broadcast.to(user.room).emit('typing', user);
+	});
+
+	socket.on('stop typing', () => {
+		const user = getUser(socket.id);
+		socket.broadcast.to(user.room).emit('stop typing');
+	});
+
 	socket.on('sendMessage', (message, callback) => {
 		const user = getUser(socket.id);
 

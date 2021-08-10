@@ -1,3 +1,5 @@
+let typing = false;
+
 const socket = io();
 
 const $messageForm = document.querySelector('#message-form');
@@ -7,10 +9,10 @@ const $sendLocation = document.querySelector('#send-location');
 const $messages = document.querySelector('#messages');
 
 const $messageTemplate = document.querySelector('#message-template').innerHTML;
-const $locationTemplate = document.querySelector(
-	'#location-message-template'
-).innerHTML;
+const $locationTemplate = document.querySelector('#location-message-template')
+	.innerHTML;
 const $sidebarTemplate = document.querySelector('#sidebar-template').innerHTML;
+const $dotsTemplate = document.querySelector('#dots-template').innerHTML;
 
 const { username, room } = Qs.parse(location.search, {
 	ignoreQueryPrefix: true,
@@ -68,6 +70,23 @@ socket.on('share-location', message => {
 	autoscroll();
 });
 
+socket.on('typing', userData => {
+	const html = Mustache.render($dotsTemplate, {
+		username: userData.username,
+	});
+	$messages.insertAdjacentHTML('beforeend', html);
+});
+
+socket.on('stop typing', () => {
+	removeLastChild();
+});
+
+function removeLastChild(child) {
+	const lastChild = $messages.lastElementChild;
+	console.log('remove last child');
+	$messages.removeChild(lastChild);
+}
+
 function onSubmitForm(e) {
 	e.preventDefault();
 	$messageFormButton.setAttribute('disabled', 'disabled');
@@ -113,3 +132,29 @@ socket.emit('join', { username, room }, error => {
 		location.href = '/';
 	}
 });
+
+function onTyping(e) {
+	const message = $messageFormInput.value;
+	updateTyping();
+}
+
+function updateTyping() {
+	if (!typing) {
+		typing = true;
+		socket.emit('typing');
+	}
+	lastTypingTime = new Date().getTime();
+	var timerLength = 3000;
+
+	setTimeout(() => {
+		var timeNow = new Date().getTime();
+		var timeDiff = timeNow - lastTypingTime;
+
+		if (timeDiff >= timerLength && typing) {
+			socket.emit('stop typing');
+			typing = false;
+		}
+	}, timerLength);
+}
+
+$messageFormInput.addEventListener('keydown', onTyping);
