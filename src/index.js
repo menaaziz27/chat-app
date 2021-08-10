@@ -59,7 +59,6 @@ io.on('connection', socket => {
 	socket.on('typing', () => {
 		const user = getUser(socket.id);
 
-		console.log(user.username, 'is typing');
 		socket.broadcast.to(user.room).emit('typing', user);
 	});
 
@@ -99,6 +98,13 @@ io.on('connection', socket => {
 		);
 		callback();
 	});
+
+	socket.on('leave', () => {
+		const user = getUser(socket.id);
+
+		socket.emit('warning', user);
+	});
+
 	socket.on('disconnect', () => {
 		const user = removeUser(socket.id);
 

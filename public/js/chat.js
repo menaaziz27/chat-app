@@ -1,4 +1,5 @@
 let typing = false;
+let timeout = undefined;
 
 const socket = io();
 
@@ -7,6 +8,8 @@ const $messageFormButton = document.querySelector('#submit-button');
 const $messageFormInput = document.querySelector('#message-input');
 const $sendLocation = document.querySelector('#send-location');
 const $messages = document.querySelector('#messages');
+const $typingMessage = document.getElementsByClassName('typing');
+const $leaveBtn = document.querySelector('#leaveBtn');
 
 const $messageTemplate = document.querySelector('#message-template').innerHTML;
 const $locationTemplate = document.querySelector('#location-message-template')
@@ -47,6 +50,11 @@ socket.on('message', message => {
 		message: message.text,
 		createdAt: moment(message.createdAt).format('h:mm a'),
 	});
+
+	// delete typing message if exists
+	document.querySelectorAll('.typing').forEach(e => e.remove());
+
+	// insert message text
 	$messages.insertAdjacentHTML('beforeend', html);
 	autoscroll();
 });
@@ -78,13 +86,12 @@ socket.on('typing', userData => {
 });
 
 socket.on('stop typing', () => {
-	removeLastChild();
+	removeTypingMessage();
 });
 
-function removeLastChild(child) {
-	const lastChild = $messages.lastElementChild;
-	console.log('remove last child');
-	$messages.removeChild(lastChild);
+function removeTypingMessage() {
+	console.log($typingMessage);
+	$typingMessage[0]?.remove();
 }
 
 function onSubmitForm(e) {
@@ -134,27 +141,31 @@ socket.emit('join', { username, room }, error => {
 });
 
 function onTyping(e) {
-	const message = $messageFormInput.value;
 	updateTyping();
 }
 
+function timeoutFunction() {
+	typing = false;
+	socket.emit('stop typing');
+}
+
+let timeId;
 function updateTyping() {
-	if (!typing) {
+	if (typing == false) {
 		typing = true;
 		socket.emit('typing');
+		timeout = setTimeout(timeoutFunction, 3000);
+	} else {
+		clearTimeout(timeout);
+		timeout = setTimeout(timeoutFunction, 3000);
 	}
-	lastTypingTime = new Date().getTime();
-	var timerLength = 3000;
+}
+socket.on('warning', user => {
+	alert(`${user.username} are you sure you wanna leave the room?`);
+});
 
-	setTimeout(() => {
-		var timeNow = new Date().getTime();
-		var timeDiff = timeNow - lastTypingTime;
-
-		if (timeDiff >= timerLength && typing) {
-			socket.emit('stop typing');
-			typing = false;
-		}
-	}, timerLength);
+function leaveBtnHandler(e) {
+	socket.emit('leave');
 }
 
 $messageFormInput.addEventListener('keydown', onTyping);

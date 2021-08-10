@@ -89,6 +89,20 @@ button:disabled {
     background: #333744;
     width: 225px;
     overflow-y: scroll;
+    position: relative;
+}
+
+#leaveBtn {
+    position: absolute;
+    margin: auto;
+    bottom: 0;
+    right: 0px;
+}
+
+#users {
+    text-align: center;
+    padding: 8px;
+    margin-top: 20px;
 }
 
 .chat__main {
@@ -160,6 +174,7 @@ button:disabled {
     font-size: 18px;
     margin-bottom: 4px;
     padding: 12px 24px 0;
+    text-align: center;
 }
 
 .users {
